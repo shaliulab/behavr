@@ -48,12 +48,20 @@ test_that("bin_apply works with experssions or strings ", {
 })
 
 test_that("bin_apply_all works", {
-  dt <- toy_activity_data(data.frame(id=1:3), duration = days(1))
+  dt <- toy_activity_data(data.frame(id = 1:3), duration = days(1))
   dt_binned_str <- bin_apply_all(dt, y = "moving")
   dt_binned_expr <- bin_apply_all(dt, y = moving)
   dt_binned_expr_inv <- bin_apply_all(dt, !moving)
-  dt_binned_expr_inv[, moving := 1-`!moving`]
+  dt_binned_expr_inv[, moving := 1 - `!moving`]
   dt_binned_expr_inv[, `!moving` := NULL]
   expect_equal(dt_binned_expr_inv, dt_binned_expr)
   expect_equal(dt_binned_expr_inv, dt_binned_str)
+})
+
+test_that("bin_all works", {
+  dt <- toy_activity_data(data.frame(id = 1:3), duration = days(1))
+  dt_binned_summary <- bin_all(data = dt, y = c("moving", "asleep"))
+  expect_is(dt_binned_summary, "behavr")
+  expect_false(class(dt_binned_summary$asleep) == "logical")
+  expect_true(class(dt_binned_summary$asleep) == "numeric")
 })

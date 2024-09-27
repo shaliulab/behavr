@@ -75,7 +75,15 @@ bin_apply <- function(data, y, x = "t", x_bin_length = mins(30),
               ]
 
   out <- out[, b__ := bin_var( b__, x_bin_length, wrap=wrap_x_by)]
-  out <- out[, .(var__ = FUN(var__)),by = b__]
+  out <- out[, .(var__ = FUN(var__, ...)),by = b__]
+
+
+  # if the FUN has an attribute called var name
+  # then rename the new column with it
+  var_name_exist <- attr(FUN, "var_name")
+  if (!is.null(var_name_exist)) {
+    var_name <- var_name_exist
+  }
 
   data.table::setnames(out, c("var__", "b__"), c(var_name, b_name))
 
@@ -83,6 +91,7 @@ bin_apply <- function(data, y, x = "t", x_bin_length = mins(30),
 
 
 #' @rdname bin_apply
+#' @details bin_apply_all for a multiindividual dataset
 #' @export
 bin_apply_all <- function(data, ...){
   # trick to avoid NOTES from R CMD check:
@@ -94,7 +103,43 @@ bin_apply_all <- function(data, ...){
 bin_var <- function(t, bin_length, wrap = NULL){
   if(!is.null(wrap))
     t <- t %% wrap
-  floor(t /bin_length) * bin_length
+  floor(t / bin_length) * bin_length
+}
+
+
+#' Convenience wrapper around bin_apply_all and merge_behavr_all
+#'
+#' Bin variable `y` along variable `x` on bins of length `x_bin_length`
+#' using function `summary_FUN`.
+#'
+#' @importFrom purrr map
+#' @param data A behavr table
+#' @param x Name of column to make bins of, normally "t" for time
+#' @param y Columns in data to compute aggregates for. Can be more than 1!
+#' @param ... Additional arguments to bin_apply_all
+#' @export
+bin_all <- function(data, y, x="t", ...) {
+
+  data <- lapply(y, function(yy) {
+    bin_apply_all(
+      data = data,
+      y = yy,
+      x = x,
+      ...
+    )
+  })
+
+  # if more than one variable was passed, merge the results
+  if (all(sapply(data, function(x) inherits(x, "behavr"))))
+    data <- Reduce(x = data, f = merge_behavr_all)
+  else if (any(sapply(data, function(x) inherits(x, "behavr"))))
+    stop("Some entries are of class behavr and some others are not")
+  # else if (length(data) > 1)
+  #   data <- do.call(dplyr::full_join, data)
+  # else
+  #   data <- data[[1]]
+
+  return(data)
 }
 
 

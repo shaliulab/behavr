@@ -32,3 +32,4 @@ rejoin <- function(x){
  check_conform(x)
  data.table::as.data.table(meta(x)[x])
 }
+

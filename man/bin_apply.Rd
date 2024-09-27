@@ -5,8 +5,15 @@
 \alias{bin_apply_all}
 \title{Bin a variable (typically time) and compute an aggregate for each bin}
 \usage{
-bin_apply(data, y, x = "t", x_bin_length = mins(30),
-  wrap_x_by = NULL, FUN = mean, ...)
+bin_apply(
+  data,
+  y,
+  x = "t",
+  x_bin_length = mins(30),
+  wrap_x_by = NULL,
+  FUN = mean,
+  ...
+)
 
 bin_apply_all(data, ...)
 }
@@ -35,6 +42,8 @@ for bins of a another variable \code{x} (typically time).
 \code{wrapping} is typically used to compute averages across several periods.
 For instance, \code{wrap_x_by = days(1)}, means bins will aggregate values across several days.
 In this case, the resulting \code{x} can be interpreted as "time relative to the onset of the day" (i.e. Zeitgeber Time).
+
+bin_apply_all for a multiindividual dataset
 }
 \examples{
 metadata <- data.frame(id = paste0("toy_experiment|",1:5))

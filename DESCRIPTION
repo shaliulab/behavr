@@ -1,7 +1,7 @@
 Package: behavr
 Title: Canonical Data Structure for Behavioural Data 
 Date: 2019-01-02  
-Version: 0.3.2
+Version: 0.3.3
 Authors@R: c(
     person("Quentin", "Geissmann", role = c("aut", "cre"), email = "qgeissmann@gmail.com")
     )
@@ -10,7 +10,9 @@ Depends:
     R (>= 3.00),
     data.table
 Imports:
-    methods
+    methods,
+    dplyr,
+    purrr
 Suggests: 
     testthat,
     covr,
@@ -18,7 +20,7 @@ Suggests:
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/rethomics/behavr
-BugReports: https://github.com/rethomics/behavr/issues
-RoxygenNote: 6.1.1
+URL: https://github.com/shaliulab/behavr
+BugReports: https://github.com/shaliulab/behavr/issues
+RoxygenNote: 7.1.1.9000
 Roxygen: list(markdown = TRUE)
